@@ -1,8 +1,6 @@
 import torch
 from torch import nn
 
-from Quant_module.My_quant_func import My_quant_sum
-
 __all__ = ["RelationNet"]
 
 
@@ -95,10 +93,7 @@ class RelationNet(nn.Module):
         # t, w, s, c, h, w -> t, 1, w, c, h, w -> t, wq, w, c, h, w
         support_feat = support_feat.reshape(t, self.way, self.shot, c, h, w)
         support_feat = (
-            # torch.sum(support_feat, dim=(2,))
-            #     .unsqueeze(1)
-            #     .repeat(1, self.way * self.query_num, 1, 1, 1, 1)
-            My_quant_sum(support_feat, dim=(2,), Int_Type=torch.int64)
+            torch.sum(support_feat, dim=(2,))
                 .unsqueeze(1)
                 .repeat(1, self.way * self.query_num, 1, 1, 1, 1)
         )
